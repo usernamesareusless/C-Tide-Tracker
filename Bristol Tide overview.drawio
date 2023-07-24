@@ -1,23 +1,32 @@
-<mxfile host="app.diagrams.net" modified="2023-07-24T15:19:23.390Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36" etag="2qT93Ry9kwoN4m6JShMs" version="21.6.5" type="github">
+<mxfile host="app.diagrams.net" modified="2023-07-24T15:25:07.101Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36" etag="177YKin4t_uuhgGWHwCO" version="21.6.5" type="github">
   <diagram name="Page-1" id="XiET4_LCxF__4rI366Q-">
     <mxGraphModel dx="1050" dy="542" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <UserObject label="https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=9465261&amp;amp;legacy=1&lt;br&gt;" link="https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=9465261&amp;legacy=1" id="FKk4y6Cx84PHiJMstI98-1">
-          <mxCell style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <UserObject label="Tide information scraped from here:&lt;br&gt;https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=9465261&amp;amp;legacy=1" link="https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=9465261&amp;legacy=1" id="FKk4y6Cx84PHiJMstI98-1">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
             <mxGeometry x="290" y="20" width="420" height="150" as="geometry" />
           </mxCell>
         </UserObject>
-        <mxCell id="FKk4y6Cx84PHiJMstI98-2" value="https://api.weatherbit.io&lt;br&gt;api_key = &#39;f426d182819b412a9fe0fb50d436a0fd&#39;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="290" y="210" width="420" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="FKk4y6Cx84PHiJMstI98-3" value="https://www.pythonanywhere.com/" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="20" width="200" height="370" as="geometry" />
-        </mxCell>
-        <mxCell id="FKk4y6Cx84PHiJMstI98-4" value="Google Sheets" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <UserObject label="Weather information gathered from api call here:&lt;br&gt;https://api.weatherbit.io&lt;br&gt;api_key = &#39;f426d182819b412a9fe0fb50d436a0fd&#39;" link="https://www.weatherbit.io/account/dashboard" id="FKk4y6Cx84PHiJMstI98-2">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+            <mxGeometry x="290" y="210" width="420" height="80" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Code scheduled to run daily at 12:01 AK time&lt;br&gt;https://www.pythonanywhere.com/" link="https://www.pythonanywhere.com/user/TideAlert/files/home" id="FKk4y6Cx84PHiJMstI98-3">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+            <mxGeometry x="70" y="20" width="200" height="370" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="FKk4y6Cx84PHiJMstI98-4" value="Results stored here:&lt;br&gt;Google Sheets" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="290" y="320" width="420" height="60" as="geometry" />
         </mxCell>
+        <UserObject label="Backup code" link="https://github.com/usernamesareusless/C-Tide-Tracker/blob/main/Tide%20Tracker%20Python" id="FKk4y6Cx84PHiJMstI98-5">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+            <mxGeometry x="100" y="410" width="120" height="60" as="geometry" />
+          </mxCell>
+        </UserObject>
       </root>
     </mxGraphModel>
   </diagram>
