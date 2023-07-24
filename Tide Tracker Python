@@ -1,0 +1,167 @@
+import requests
+from bs4 import BeautifulSoup
+from datetime import datetime
+import json
+
+from googleapiclient.discovery import build
+from oauth2client.service_account import ServiceAccountCredentials
+
+
+#______Tide API______
+
+url = "https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=9465261&legacy=1"
+
+# Send an HTTP request to get the webpage content
+response = requests.get(url)
+
+
+# Parse the content using BeautifulSoup
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# Find the table that contains the tide data
+tide_table = soup.find('table', {'class': 'table table-condensed'})
+
+if not tide_table:
+    print("Tide data table not found.")
+    print([])
+
+tide_data = []
+# Extract the rows from the table (excluding the header row)
+rows = tide_table.find_all('tr')[0:]
+
+for row in rows:
+    # Get all the cells in the row
+    cells = row.find_all('td')
+
+    # Extract the date, time, and tide level from the cells
+    time = cells[0].text.strip()
+    HL = cells[1].text.strip()
+    tide_level = cells[2].text.strip()
+
+    # Append the data as a dictionary to the tide_data list
+    tide_data.append(time)
+    tide_data.append(HL)
+    tide_data.append(tide_level)
+
+print(tide_data)
+
+#______Weather API______
+
+
+
+
+# Replace 'API_KEY' with your actual Weatherbit API key
+api_key = 'f426d182819b412a9fe0fb50d436a0fd'
+
+# Set the latitude and longitude of the location for which you want to get the current weather
+latitude = 58.292191
+longitude = -157.531276
+
+# API endpoint URL
+url = f'https://api.weatherbit.io/v2.0/forecast/daily?lat={latitude}&lon={longitude}&key={api_key}&include=minutely&units=i'
+
+# Send the API request
+response = requests.get(url)
+# print(response.text)
+# Check if the request was successful (status code 200)
+if response.status_code == 200:
+    # Parse the JSON response
+    data = response.json()
+
+    # # Get the current weather data
+    # current_weather = data['data'][0]
+
+    # # Extract specific weather information
+    # temperature = current_weather['temp']
+    # description = current_weather['weather']['description']
+
+    # Print the prettified weather data
+    #print(prettified_weather_data)
+    hitemp = data['data'][0]['high_temp']
+    lowtemp = data['data'][0]['low_temp']
+    dewpoint = data['data'][0]['dewpt']
+    precipitation = data['data'][0]['precip']
+    clouds = data['data'][0]['clouds']
+    Wind_Direction = data['data'][0]['wind_cdir']
+    Wind_Speed = data['data'][0]['wind_spd']
+
+    Weather_List=[hitemp,lowtemp,dewpoint, precipitation,clouds,Wind_Speed,Wind_Direction]
+
+
+else:
+    print("Failed to fetch weather data.")
+
+#______ListCombine______
+
+for i in Weather_List:
+    tide_data.append(i)
+
+dtime = datetime.now().date()
+dtime = dtime.strftime('%m-%d-%Y')
+tide_data.insert(0,dtime)
+
+#______Sheets_Update______
+
+# Replace 'your-credentials-file.json' with the actual filename of your service account key
+service_account_key = {
+"type": "service_account",
+"project_id": "titereport",
+"private_key_id": "ad3592b4168a6f5bfc342b2fea649bb7f50986c2",
+"private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDCW2PfFkANOvyM\nTPiL8GUZzOUWca9haH4kxWqzYJ9grOA1m6dgzt8a2cW5Sb5D4XtQgvpxQMsRAHKz\n7OorUY2Hj4wztMMZlCC8JjYc1AA1BQZuM30cHfVfd1EJDxb10lPu0lY3eenGpqLn\n6trgXGOX3I8VatauCWvL+w67uwVCaKK2tPtuo17LHtxSkUNQJ9awa3DJSrEw/n4+\ndfuw8OHv+jgSk5JNsQGUbNpTdQrBZJhvszWYgNnanrPZBAkBVzNZhJgz+/N26Mh8\nHFWt3sPZGYCtuPX7mDUsLw2/CpTuL2ee0kLIthLDXKuF5EIfEoFbdm8K6v0X6vSU\nuBFTdmLjAgMBAAECggEAF8qlLp1kKNp0KN6RPFwonCBrWLSA8g0fB/RMq/mjeOug\npJ9RvXWFdR18aUKgMmILPN9TtgJm+UVTRTg2sCfTCemmEXxKt7pcyXtp+1xuTA85\n6sqNwZ/fNhj+h/vbZSsikCUaXb8kQWeLoJUsxvM4U9Ixh78k2XgYxIcOlid+LNM4\nmqYuW1tteM7VWvh25QF1NSJNHzFTggiLuCtaWIT77gdmvuVjucgUZBfNn6/COeyK\nmyXpCDpYJQ/DcntE7Nx7C6j9sndVto8I74qUubNs+23h5S8fjgXAxqp/ltgMLPn4\nO039ojRylLjdjVtvO2C+rLB7Nzt53g7TusypqBB1LQKBgQDk/3tBdRYfPoMm1eFB\nvNUSXkYEoTsOJ9dXuRkRfIbNGVs2kUkyot+Moz65e/X0fCd99rmz6QVzR4kwUMDj\nFyu/yNTd070TgS7A+gowT7KeYAcR6KOc7No8b4cBa0yNM+T80/grPFWB3y0RZp7g\nuXmVDaJ2Ityl8/WxjuqomX6ylQKBgQDZRjz3FOvyhr4y3mLye55jKszxciBeDN5n\nKgyo+/h3cM0HFHC51xV75J4H1yYwFHy7QyQ6iYNFR3nCc5PaI8E5pMG+9NnC8N5P\nvAkLBFcbkcZdP77tY0M0D4jZBT0ctTpwft3T1BveuyKXAPkAG8YTC4+4I0Z7uXej\nTszujQCZlwKBgQDKpDHkCMKcv2q7kQSWcY1zha0cJ7jkm+j5nbhLOxDmqguHTCWk\nA3EjOMomxUUvJjakRxKp3AiQrLr/4FXwHu799bA45Egq3GQNLLabbcs4Tu2ysVUn\nZojwdhjX7qV9RnDaMpEnYWqhVGbDQTZS0o5+keQz+kGbMTk3+Ko6rCnryQKBgCaz\n5kQ1C9qFufehuYpsDsinZR5VMALQ1AUYbmzjhVzxUPRD5diUwZTyIlxPLNQ/sgBB\nc4Ch4ipDEyNaJyoiWFcGTCTRxMB+23rkic/WlBWrH+SYaFAs8FmjssLFth8ZATHs\nx2LmU5iXSRAQ8kncqKnX01//mJyNawxCCysrHsI9AoGBANahu+R8wSgF1pCdnkfT\nkTtP5aw9/21219JgxsII8lVLOWBiCwaNmADK+xN7Eok5SwopUFkVO+VOKul+dwdk\n4F59zGj7RiWABTPjvxSDffFA4i0rpN0I2D+rQ0lrvzkD1VBTF8hhnBoYnxePNrmN\noxcK7y2UkViUEzOGMpckMKfS\n-----END PRIVATE KEY-----\n",
+"client_email": "tide-chart@titereport.iam.gserviceaccount.com",
+"client_id": "115135423535725083929",
+"auth_uri": "https://accounts.google.com/o/oauth2/auth",
+"token_uri": "https://oauth2.googleapis.com/token",
+"auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+"client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/tide-chart%40titereport.iam.gserviceaccount.com",
+"universe_domain": "googleapis.com"
+}
+
+
+
+
+# Scope required for accessing Google Sheets API
+scope = ['https://www.googleapis.com/auth/spreadsheets']
+
+# Authenticate with Google Sheets API using service account key
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(service_account_key, scope)
+service = build('sheets', 'v4', credentials=credentials)
+
+# Replace 'your-spreadsheet-id' with the ID of the Google Sheets you want to work with
+spreadsheet_id = '1tfmctfUq1xtomNhPXTWq_u-fBhVcV4QcO5Y13qbeBdU'
+
+try:
+    # Read data from the worksheet
+    range_name = 'Sheet1'  # Replace with the name of the sheet or range you want to read
+    result = service.spreadsheets().values().get(
+        spreadsheetId=spreadsheet_id,
+        range=range_name
+    ).execute()
+    values = result.get('values', [])
+    if not values:
+        print('No data found.')
+    else:
+        print('Data in the worksheet:')
+        for row in values:
+            print(row)
+
+
+    # Write data to the worksheet
+    new_data = [tide_data]
+    range_to_update = 'Sheet1!E'+str(len(values)+1)  # Replace with the desired range to write
+    body = {
+        'values': new_data
+    }
+    service.spreadsheets().values().update(
+        spreadsheetId=spreadsheet_id,
+        range=range_to_update,
+        valueInputOption='RAW',
+        body=body
+    ).execute()
+    print('Data added successfully.')
+
+except Exception as e:
+    print('Error:', e)
+
+
+
